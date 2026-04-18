@@ -1,9 +1,14 @@
 pipeline {
     agent any
 
+    environment {
+        PATH = "/usr/bin:/bin:/usr/local/bin"
+    }
+
     stages {
         stage('Build') {
             steps {
+                sh 'docker --version'
                 sh 'docker build -t devops-app .'
             }
         }
