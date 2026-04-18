@@ -6,16 +6,30 @@ pipeline {
     }
 
     stages {
-        stage('Build') {
+
+        stage('Check Docker') {
             steps {
+                sh 'echo "Checking Docker..."'
+                sh 'which docker || true'
                 sh 'docker --version'
+            }
+        }
+
+        stage('Stop Old Container') {
+            steps {
+                sh 'docker rm -f devops-container || true'
+            }
+        }
+
+        stage('Build Image') {
+            steps {
                 sh 'docker build -t devops-app .'
             }
         }
 
-        stage('Run') {
+        stage('Run Container') {
             steps {
-                sh 'docker run -d -p 5000:5000 devops-app'
+                sh 'docker run -d -p 5000:5000 --name devops-container devops-app'
             }
         }
     }
